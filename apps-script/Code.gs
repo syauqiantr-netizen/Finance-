@@ -206,20 +206,32 @@ function tulisModel(ss, dataJson) {
     if (lastRow >= 5) {
       var bulan = proj.getRange(5, 3, lastRow - 4, 1).getValues(); // C5..C{last}
 
-      // 2a) Saldo aktual bulanan -> kolom I (ACTUAL TOTAL)
+      // 2a) Saldo aktual bulanan -> kolom I (ACTUAL TOTAL).
+      //     Total = aktual investasi + aktual buffer (per pot); fallback ke
+      //     nilai total lama (d.aktual) untuk bulan yang belum dipisah.
+      var tot = {};
       if (d.aktual && typeof d.aktual === 'object') {
-        for (var key in d.aktual) {
-          var val = d.aktual[key];
-          if (typeof val !== 'number') continue;
-          var bag = String(key).split('-');
-          var yy = parseInt(bag[0], 10), mm = parseInt(bag[1], 10);
-          if (!yy || !mm) continue;
-          for (var i = 0; i < bulan.length; i++) {
-            var dt = bulan[i][0];
-            if (dt instanceof Date && dt.getFullYear() === yy && (dt.getMonth() + 1) === mm) {
-              proj.getRange(5 + i, 9).setValue(val); // kolom I = 9
-              break;
-            }
+        for (var kk in d.aktual) if (typeof d.aktual[kk] === 'number') tot[kk] = d.aktual[kk];
+      }
+      var bulanSet = {};
+      if (d.aktualInv && typeof d.aktualInv === 'object') for (var ka in d.aktualInv) bulanSet[ka] = 1;
+      if (d.aktualBuf && typeof d.aktualBuf === 'object') for (var kb in d.aktualBuf) bulanSet[kb] = 1;
+      for (var mk in bulanSet) {
+        var iv = (d.aktualInv && typeof d.aktualInv[mk] === 'number') ? d.aktualInv[mk] : 0;
+        var bv = (d.aktualBuf && typeof d.aktualBuf[mk] === 'number') ? d.aktualBuf[mk] : 0;
+        tot[mk] = iv + bv;
+      }
+      for (var key in tot) {
+        var val = tot[key];
+        if (typeof val !== 'number') continue;
+        var bag = String(key).split('-');
+        var yy = parseInt(bag[0], 10), mm = parseInt(bag[1], 10);
+        if (!yy || !mm) continue;
+        for (var i = 0; i < bulan.length; i++) {
+          var dt = bulan[i][0];
+          if (dt instanceof Date && dt.getFullYear() === yy && (dt.getMonth() + 1) === mm) {
+            proj.getRange(5 + i, 9).setValue(val); // kolom I = 9
+            break;
           }
         }
       }
