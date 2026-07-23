@@ -98,6 +98,22 @@ Setiap kali isi `Code.gs` berubah, aktifkan versi barunya:
 **Apps Script → Deploy → Manage deployments → (pensil) Edit → Version: New version → Deploy.**
 URL `…/exec` tidak berubah, jadi tak perlu diganti di aplikasi.
 
+## Angka aplikasi mengisi tab model (Assumptions & Investment Projection)
+
+Selain tab `Log`/`Snapshot`, `Code.gs` juga menulis angka aplikasi ke **sel biru
+input** di tab model (rumus tidak disentuh):
+
+| Angka di aplikasi | → Sel model |
+|---|---|
+| Aset RDPT / ETF / Emas / Kas | `Assumptions!C17 / C18 / C19 / C20` (Total `C22` ikut otomatis) |
+| **Saldo asli bulan ini** | `Investment Projection` kolom **I (ACTUAL TOTAL)**, di baris bulan yang cocok (baris 5 = Jun-2026, 6 = Jul-2026, dst) |
+
+Jadi begitu kamu isi "Saldo asli bulan ini" di aplikasi → otomatis masuk ke kolom
+`ACTUAL TOTAL` bulan tersebut, dan `Variance`/`On Track?` ikut terhitung.
+
+> Konsekuensi: sel-sel itu jadi **dikendalikan aplikasi**. Jika kamu ketik manual di
+> sel yang sama, nanti tertimpa saat aplikasi sinkron. Edit angkanya di aplikasi.
+
 ## Menyamakan HP dengan laptop
 
 Pengaturan sinkron disimpan **per perangkat**. Kalau laptop sudah "Tersinkron"

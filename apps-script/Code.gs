@@ -68,6 +68,9 @@ function doPost(e) {
     snap.setColumnWidth(1, 210);
     snap.setColumnWidth(2, 260);
 
+    // tulis angka aplikasi ke tab model (Assumptions + Investment Projection)
+    try { tulisModel(ss, body.data); } catch (err2) {}
+
     // pastikan tab "Edit di sini" tersedia (nilai lama tidak ditimpa)
     siapkanInput(ss);
 
@@ -178,6 +181,47 @@ function onOpen() {
   } catch (e) {}
 }
 function menuBuatInput() { siapkanInput(SpreadsheetApp.getActiveSpreadsheet()); }
+
+// Tulis angka aplikasi ke sel-sel model (arah aplikasi -> model).
+// Hanya menulis SEL BIRU input; rumus tidak disentuh.
+function tulisModel(ss, dataJson) {
+  var d;
+  try { d = JSON.parse(dataJson || '{}'); } catch (e) { return; }
+
+  // 1) Nilai portofolio -> Assumptions C17..C20 (RDPT/ETF/Emas/Kas)
+  var asum = ss.getSheetByName('Assumptions');
+  if (asum && d.aset) {
+    if (typeof d.aset.rdpt === 'number') asum.getRange('C17').setValue(d.aset.rdpt);
+    if (typeof d.aset.etf  === 'number') asum.getRange('C18').setValue(d.aset.etf);
+    if (typeof d.aset.emas === 'number') asum.getRange('C19').setValue(d.aset.emas);
+    if (typeof d.aset.kas  === 'number') asum.getRange('C20').setValue(d.aset.kas);
+    // Total portfolio (C22) ikut otomatis lewat rumus SUM.
+  }
+
+  // 2) Saldo aktual bulanan -> Investment Projection kolom I (ACTUAL TOTAL),
+  //    dicocokkan per bulan berdasarkan tanggal di kolom C.
+  var proj = ss.getSheetByName('Investment Projection');
+  if (proj && d.aktual && typeof d.aktual === 'object') {
+    var lastRow = proj.getLastRow();
+    if (lastRow >= 5) {
+      var bulan = proj.getRange(5, 3, lastRow - 4, 1).getValues(); // C5..C{last}
+      for (var key in d.aktual) {
+        var val = d.aktual[key];
+        if (typeof val !== 'number') continue;
+        var bag = String(key).split('-');
+        var yy = parseInt(bag[0], 10), mm = parseInt(bag[1], 10);
+        if (!yy || !mm) continue;
+        for (var i = 0; i < bulan.length; i++) {
+          var dt = bulan[i][0];
+          if (dt instanceof Date && dt.getFullYear() === yy && (dt.getMonth() + 1) === mm) {
+            proj.getRange(5 + i, 9).setValue(val); // kolom I = 9
+            break;
+          }
+        }
+      }
+    }
+  }
+}
 
 function keluar(o) {
   return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
