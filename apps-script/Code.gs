@@ -1,7 +1,7 @@
 // Ganti KODE_RAHASIA, lalu Deploy > New deployment > Web app
 // Execute as: Me   |   Who has access: Anyone
 
-var KODE_RAHASIA = 'ganti-kode-ini';
+var KODE_RAHASIA = 'cf-syauqi-2026';
 
 function doPost(e) {
   var lock = LockService.getScriptLock();

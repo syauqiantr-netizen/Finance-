@@ -8,18 +8,18 @@ Waktu ± 10 menit, sekali saja. Ikuti berurutan.
 
 Ini yang membuat aplikasi bisa menulis & membaca spreadsheet-mu.
 
-1. Buka spreadsheet yang mau dipakai sebagai tempat data.
-   > Saran: pakai sheet **"Log Keuangan"** (yang sudah kamu buat), supaya tab
-   > `Log` & `Snapshot` dari aplikasi tidak bercampur dengan model `cf_syauqi_revised`.
+1. Buka spreadsheet **`cf_syauqi_revised`** (CF syauqi) — ini yang kamu minta jadi
+   tempat sinkron. Aplikasi hanya akan **menambah 2 tab baru** (`Log` = riwayat,
+   `Snapshot` = data lengkap); tab model/ perhitunganmu yang lain **tidak disentuh**.
 2. Di menu atas: **Extensions → Apps Script**.
 3. Hapus semua isi yang ada, lalu **tempel seluruh isi file `apps-script/Code.gs`**
    dari repo ini.
-4. Di baris paling atas, ganti kata sandi:
+4. Kata sandi **sudah saya isikan** untukmu di baris atas:
    ```js
-   var KODE_RAHASIA = 'ganti-kode-ini';
+   var KODE_RAHASIA = 'cf-syauqi-2026';
    ```
-   Ganti `ganti-kode-ini` dengan kata sandi bebas buatanmu, misal `rahasia-syauqi-2026`.
-   **Ingat/catat** — nanti dipakai di aplikasi. (Boleh huruf/angka/strip, tanpa spasi.)
+   Tidak perlu diubah (kata sandi ini juga **sudah otomatis terisi di aplikasi**).
+   Kalau mau ganti, silakan, tapi harus **sama persis** dengan yang di aplikasi.
 5. Klik ikon **Simpan** (💾).
 6. Klik **Deploy → New deployment**.
    - Klik ikon gerigi ⚙️ di kiri → pilih **Web app**.
@@ -60,11 +60,11 @@ Kamu punya dua cara memakai aplikasi (`index.html`):
 ## Bagian 3 — Sambungkan aplikasi ke Sheets
 
 1. Di aplikasi, buka menu **Lainnya → Sinkron** (atau tab **Sinkron**).
-2. Isi:
+2. Isi **satu kolom saja**:
    - **URL Web App**: tempel URL dari **Bagian 1 langkah 8**.
-   - **Kata sandi**: tulis **persis sama** dengan `KODE_RAHASIA` di Apps Script.
-3. Nyalakan **Kirim otomatis** → jadi **Aktif**.
-4. Ketuk **Kirim ringkasan sekarang** sekali untuk uji coba.
+   - **Kata sandi**: **sudah terisi otomatis** (`cf-syauqi-2026`) — biarkan.
+   - **Kirim otomatis**: **sudah Aktif** dari awal — biarkan.
+3. Ketuk **Kirim ringkasan sekarang** sekali untuk uji coba.
    - Berhasil → muncul "Terkirim/Tersinkron", dan di spreadsheet muncul tab
      **`Log`** & **`Snapshot`** terisi.
 5. Untuk menarik data dari Sheets ke aplikasi (mis. di HP lain), ketuk **Tarik**.
