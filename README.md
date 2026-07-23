@@ -9,7 +9,10 @@ kamu **dan** bisa disinkronkan dua arah ke Google Sheets.
 | Arah | Cara | Otomatis? |
 |------|------|-----------|
 | **Aplikasi → Sheets** | Setiap perubahan dikirim ke tab `Log` (riwayat) + `Snapshot` (data lengkap) | ✅ Ya — nyalakan **"Kirim otomatis"** (kirim 4 detik setelah berhenti mengetik) |
-| **Sheets → Aplikasi** | Tombol **"Tarik"** memuat data terakhir dari tab `Snapshot` | Manual (satu ketuk) |
+| **Sheets → Aplikasi** | Tombol **"Tarik"** memuat data terakhir **+ angka yang kamu isi di tab `✏️ Edit di sini`** | Manual (satu ketuk) |
+
+Untuk mengubah angka dari sisi Google Sheets, edit **kolom kuning** di tab
+**`✏️ Edit di sini`** (dibuat otomatis oleh `Code.gs`), lalu ketuk **Tarik** di aplikasi.
 
 Aplikasi berbicara dengan Google Sheets lewat sebuah **Google Apps Script Web App**
 yang kamu pasang sekali di spreadsheet, diamankan dengan kata sandi.

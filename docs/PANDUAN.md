@@ -75,19 +75,43 @@ Selesai! Mulai sekarang:
 
 ---
 
-## Yang perlu diketahui (batasan jujur)
+## Mengedit dari Google Sheets (tab "✏️ Edit di sini")
 
-Aplikasi ini memakai model **"aplikasi = sumber utama, Sheets = cermin + riwayat"**:
+Kode `apps-script/Code.gs` membuat **tab `✏️ Edit di sini`** secara otomatis di
+spreadsheet. Isinya kolom **KUNING yang boleh kamu edit**:
 
-- Arah **aplikasi → Sheets berjalan otomatis penuh.**
-- Arah **Sheets → aplikasi** memuat kembali *snapshot* yang ditulis aplikasi
-  (tab `Snapshot`, sel `B2` berisi data JSON). Jadi mengetik ulang angka
-  **langsung di sel-sel model** tidak otomatis masuk ke aplikasi — edit angka
-  sebaiknya dilakukan **di dalam aplikasi**, lalu Sheets menyusul otomatis.
+- Pendapatan (Syauqi, Syarifah)
+- Aset: RDPT, ETF/US Market, Emas, Kas, Rumah
+- Imbal hasil (%): ETF, RDPT, Emas, Kas
+- DCA nominal/bulan, KPR setoran/bulan, Saldo aktual bulan ini
 
-Kalau kamu mau versi di mana **mengedit sel tertentu di Sheets langsung mengubah
-aplikasi** (misalnya nilai portofolio / split DCA di tab khusus "Input"),
-itu bisa dibuatkan sebagai pengembangan lanjutan — tinggal bilang.
+**Cara pakai:** ketik angka baru di sel kuning → di aplikasi buka **Sinkron → Tarik**.
+Angka di aplikasi ikut berubah. **Kosongkan** sel bila ingin memakai angka dari
+aplikasi (sel kosong = tidak menimpa).
+
+> Tab `Log` & `Snapshot` tetap **bukan untuk diedit tangan** — itu riwayat & data
+> mesin. Untuk mengatur dari Sheets, pakai **hanya** tab `✏️ Edit di sini`.
+
+### Kalau kamu memperbarui Code.gs (deploy ulang)
+
+Setiap kali isi `Code.gs` berubah, aktifkan versi barunya:
+**Apps Script → Deploy → Manage deployments → (pensil) Edit → Version: New version → Deploy.**
+URL `…/exec` tidak berubah, jadi tak perlu diganti di aplikasi.
+
+## Menyamakan HP dengan laptop
+
+Pengaturan sinkron disimpan **per perangkat**. Kalau laptop sudah "Tersinkron"
+tapi HP belum:
+
+1. Di HP buka aplikasi → **Lainnya → Sinkron**
+2. Tempel **URL Web App yang sama** (kata sandi sudah terisi otomatis)
+3. Ketuk **Tarik** → data dari Sheets termuat ke HP
+
+## Arah sinkron (ringkas)
+
+- **Aplikasi → Sheets:** otomatis penuh (setiap perubahan).
+- **Sheets → Aplikasi:** ketuk **Tarik**; memuat data terbaru **plus** angka yang
+  kamu isi di tab `✏️ Edit di sini`.
 
 ---
 
