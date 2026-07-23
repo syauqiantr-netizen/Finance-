@@ -70,6 +70,8 @@ function doPost(e) {
 
     // tulis angka aplikasi ke tab model (Assumptions + Investment Projection)
     try { tulisModel(ss, body.data); } catch (err2) {}
+    // tulis ledger transaksi ke tab 'Transaksi' (dengan kolom Source)
+    try { tulisTransaksi(ss, body.data); } catch (err3) {}
 
     // pastikan tab "Edit di sini" tersedia (nilai lama tidak ditimpa)
     siapkanInput(ss);
@@ -253,6 +255,36 @@ function tulisModel(ss, dataJson) {
       }
     }
   }
+}
+
+// Tulis ledger transaksi (manual + recurring) ke tab 'Transaksi'
+function tulisTransaksi(ss, dataJson) {
+  var d;
+  try { d = JSON.parse(dataJson || '{}'); } catch (e) { return; }
+  if (!d.transaksi || !d.transaksi.length) return;
+  var tx = ss.getSheetByName('Transaksi');
+  if (!tx) tx = ss.insertSheet('Transaksi');
+  tx.clear();
+  tx.getRange(1, 1, 1, 8).setValues([['Tanggal', 'Jenis', 'Kategori', 'Rekening', 'Nominal', 'Deskripsi', 'Catatan', 'Source']]);
+  tx.setFrozenRows(1);
+  var rekMap = {};
+  (d.rekening || []).forEach(function (r) { rekMap[r.id] = r.nama; });
+  var rows = d.transaksi.map(function (t) {
+    return [
+      t.tanggal || '',
+      t.jenis === 'in' ? 'Pemasukan' : 'Pengeluaran',
+      t.kategori || '',
+      rekMap[t.rekeningId] || t.rekeningId || '',
+      (typeof t.nominal === 'number' ? t.nominal : 0),
+      t.deskripsi || '',
+      t.catatan || '',
+      t.source || 'Manual'
+    ];
+  });
+  if (rows.length) tx.getRange(2, 1, rows.length, 8).setValues(rows);
+  tx.setColumnWidth(1, 90);
+  tx.setColumnWidth(3, 170);
+  tx.setColumnWidth(6, 220);
 }
 
 function keluar(o) {
