@@ -1,5 +1,5 @@
 /* Pelayan luring — menyimpan aplikasi supaya tetap terbuka tanpa sinyal */
-const CACHE = "keuangan-v6";
+const CACHE = "keuangan-v7";
 const INTI = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", (e) => {
