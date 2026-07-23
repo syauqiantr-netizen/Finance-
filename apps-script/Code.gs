@@ -201,23 +201,43 @@ function tulisModel(ss, dataJson) {
   // 2) Saldo aktual bulanan -> Investment Projection kolom I (ACTUAL TOTAL),
   //    dicocokkan per bulan berdasarkan tanggal di kolom C.
   var proj = ss.getSheetByName('Investment Projection');
-  if (proj && d.aktual && typeof d.aktual === 'object') {
+  if (proj) {
     var lastRow = proj.getLastRow();
     if (lastRow >= 5) {
       var bulan = proj.getRange(5, 3, lastRow - 4, 1).getValues(); // C5..C{last}
-      for (var key in d.aktual) {
-        var val = d.aktual[key];
-        if (typeof val !== 'number') continue;
-        var bag = String(key).split('-');
-        var yy = parseInt(bag[0], 10), mm = parseInt(bag[1], 10);
-        if (!yy || !mm) continue;
-        for (var i = 0; i < bulan.length; i++) {
-          var dt = bulan[i][0];
-          if (dt instanceof Date && dt.getFullYear() === yy && (dt.getMonth() + 1) === mm) {
-            proj.getRange(5 + i, 9).setValue(val); // kolom I = 9
-            break;
+
+      // 2a) Saldo aktual bulanan -> kolom I (ACTUAL TOTAL)
+      if (d.aktual && typeof d.aktual === 'object') {
+        for (var key in d.aktual) {
+          var val = d.aktual[key];
+          if (typeof val !== 'number') continue;
+          var bag = String(key).split('-');
+          var yy = parseInt(bag[0], 10), mm = parseInt(bag[1], 10);
+          if (!yy || !mm) continue;
+          for (var i = 0; i < bulan.length; i++) {
+            var dt = bulan[i][0];
+            if (dt instanceof Date && dt.getFullYear() === yy && (dt.getMonth() + 1) === mm) {
+              proj.getRange(5 + i, 9).setValue(val); // kolom I = 9
+              break;
+            }
           }
         }
+      }
+
+      // 2b) DCA bulanan aplikasi -> kolom D (DCA This Month). Baris pertama
+      //     (bulan pangkal) = 0, sesuai model. Override per-bulan dari dcaKhusus.
+      if (d.dca && typeof d.dca.nominal === 'number') {
+        var nominal = d.dca.nominal;
+        var khusus = d.dcaKhusus || {};
+        var out = [];
+        for (var j = 0; j < bulan.length; j++) {
+          var dj = bulan[j][0];
+          if (!(dj instanceof Date)) break; // berhenti di akhir tabel proyeksi
+          var ymj = dj.getFullYear() + '-' + ('0' + (dj.getMonth() + 1)).slice(-2);
+          var dca = (j === 0) ? 0 : (typeof khusus[ymj] === 'number' ? khusus[ymj] : nominal);
+          out.push([dca]);
+        }
+        if (out.length) proj.getRange(5, 4, out.length, 1).setValues(out); // kolom D = 4
       }
     }
   }
